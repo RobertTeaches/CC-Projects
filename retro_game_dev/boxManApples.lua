@@ -49,8 +49,6 @@ local player = Player
 local apples = {}
 local points = 0
 
-
-
 function collision_point_box(boxPos, size, pointPos)
     local boxExtents = vector.new(boxPos.x + size.x + 1, boxPos.y + size.y)
 
@@ -115,7 +113,7 @@ function apple_code()
 end
 
 
-function keyInput()
+function KeyInput()
     while true do 
         local e, key = os.pullEvent("key")
                 local kName = keys.getName(key)
@@ -127,17 +125,7 @@ function keyInput()
     end
 end
 
-
-local monitor = peripheral.find("monitor")
-local screen = term.current()
-
-function externalMonitor()
-    term.redirect(screen)
-    draw()
-    screen = term.redirect(monitor)
-    draw()
-end
-function gameLoop()
+function GameLoop()
     while true do
         draw()
         apple_code()
@@ -145,4 +133,4 @@ function gameLoop()
     end   
 end
 spawn_apples(3)
-parallel.waitForAny(gameLoop, keyInput)
+parallel.waitForAny(GameLoop, KeyInput)

@@ -28,7 +28,7 @@ function input()
     end
 end
 
-function gameLoop()
+function GameLoop()
     while true do
         input()
         draw()
@@ -39,4 +39,4 @@ function gameLoop()
     end
 end
 
-gameLoop()
+GameLoop()

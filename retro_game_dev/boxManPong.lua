@@ -80,7 +80,7 @@ function moveComputer(dir)
     end
 end
 
-function keyInput()
+function KeyInput()
     while true do 
         local e, key = os.pullEvent("key")
                 local kName = keys.getName(key)
@@ -102,7 +102,7 @@ function externalMonitor()
     draw()
 end
 
-function gameLoop()
+function GameLoop()
     while true do
         externalMonitor()
         pong_code()
@@ -111,4 +111,4 @@ function gameLoop()
 end
 
 term.redirect(monitor)
-parallel.waitForAny(gameLoop, keyInput)
+parallel.waitForAny(GameLoop, KeyInput)

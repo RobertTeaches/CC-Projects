@@ -105,7 +105,7 @@ function maze_code()
 
 end
 
-function keyInput()
+function KeyInput()
 
     local e, key = os.pullEvent("key")
     local kName = keys.getName(key)
@@ -131,14 +131,14 @@ function externalMonitor()
     draw()
 end
 
-function gameLoop()
+function GameLoop()
     while true do
         externalMonitor()
-        keyInput()
+        KeyInput()
         maze_code()
         if gameOver then break end
     end   
 end
 
 start()
-gameLoop()
+GameLoop()
