@@ -1,0 +1,192 @@
+--Global Variables
+sides = {
+    "front",
+    "right",
+    "back",
+    "left",
+    "top",
+    "bottom",
+    front = 1,
+    right = 2,
+    back = 3,
+    left = 4,
+    top = 5,
+    bottom = 6,
+}
+
+--May not be neccessary
+local function getSide(side)
+    --Grab correct side using "sides" table, allowing string and num input
+    if type(side) == "string" then 
+        num = sides[side] 
+    elseif type(side) == "number" then
+         num = side
+    else 
+        return
+    end
+    return num
+end
+
+--Local Functions
+
+local function turnAround()
+    turtle.turnLeft()
+    turtle.turnLeft()
+end
+
+local function digMove()
+    while not turtle.forward() do
+        turtle.dig()
+        turtle.attack()
+    end
+end
+
+local function digMoveUp()
+    while not turtle.up() do
+        turtle.digUp()
+        turtle.attackUp()
+    end
+end
+
+local function digMoveDown()
+    while not turtle.down() do
+        turtle.digDown()
+        turtle.attackDown()
+    end
+end
+
+--Global Functions | We should follow CraftOS naming principles(camelCase)
+function mineVein(ore)
+    --The blocks that need to be mined
+    local queue = {}
+    --The amount of block paths that need to be cleared
+    local queueCount = 0
+
+    while true do 
+        --Blocks in surrounding area
+        local blocks = lookAround()
+
+
+        for index,block in pairs(blocks) do
+            if block.name == ore.name then
+                queueCount = queueCount + 1
+                queue[queueCount] = index
+            end
+        end
+
+        --If the Queue is empty, we shouldn't end the loop, we should continue looking for more blocks,
+        -- and move forward to get a new location
+        if queueCount == 0 then
+            digMove()  
+        else
+            for k,v in pairs(queue) do
+                digSide(queue[k])
+            end
+            for k,v in pairs(queue) do
+                digAndMoveToSide(queue[k])
+                mineVein(ore)
+                queueCount = queueCount-1
+                goBack(queue[k])
+            end
+        end
+
+    end
+
+end
+
+function lookAround()
+    local surroundingBlocks = {}
+    for i=1,4 do
+        --Get Block Info
+        local success, block = turtle.inspect()
+        --Store block to blocks table
+        surroundingBlocks[i] = block
+        --Move on to next block
+        turtle.turnRight()
+    end
+    --Get Top Blocks
+    local success, blockUp = turtle.inspectUp()
+    --Get Bottom Block
+    local success, blockDown = turtle.inspectDown()
+    --Store Vertical Blocks
+    surroundingBlocks[5] = blockUp
+    surroundingBlocks[6] = blockDown
+
+    return surroundingBlocks
+end
+
+function digAndMoveToSide(side)
+    local num = getSide(side)
+    if num == 1 then
+        digMove()
+    elseif num == 2 then
+        turtle.turnRight()
+        digMove()
+    elseif num == 3 then
+        turnAround()
+        digMove()
+    elseif num == 4 then
+        turtle.turnLeft()
+        digMove()
+    elseif num == 5 then
+        digMoveUp()
+    elseif num == 6 then
+        digMoveDown()
+    else
+        return false;
+    end
+end
+
+function digSide(side)
+    local num = getSide(side)
+    if num == 1 then
+        turtle.dig()
+    elseif num == 2 then
+        turtle.turnRight()
+        turtle.dig()
+        turtle.turnLeft()
+    elseif num == 3 then
+        turnAround()
+        turtle.dig()
+        turnAround()
+    elseif num == 4 then
+        turtle.turnLeft()
+        turtle.dig()
+        turtle.turnRight()
+    elseif num == 5 then
+        turtle.digUp()
+    elseif num == 6 then
+        turtle.digDown()
+    else
+        return false;
+    end
+end
+
+function goBack(initial_direction)
+    if initial_direction == 1 then
+        turtle.back()
+    elseif initial_direction == 2 then
+        turnAround()
+        turtle.forward()
+        turtle.turnRight()
+    elseif initial_direction == 3 then
+        turnAround()
+        turtle.forward()
+    elseif initial_direction == 4 then
+        turnAround()
+        turtle.forward()
+        turtle.turnLeft()
+    elseif initial_direction == 5 then
+        turtle.down()
+    elseif initial_direction == 6 then
+        turtle.up()
+    else
+        return false
+    end
+end
+
+
+--Never used
+function GetSides()
+    return sides
+end
