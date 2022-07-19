@@ -1,0 +1,169 @@
+--Global Variables
+side = {}
+side[1] = "front"
+side[2] = "right"
+side[3] = "back"
+side[4] = "left"
+side[5] = "top"
+side[6] = "bottom"
+side["front"] = 1
+side["right"] = 2
+side["back"] = 3
+side["left"] = 4
+side["top"] = 5
+side["bottom"] = 6
+
+--Local Functions
+
+local function turnAround()
+    turtle.turnLeft()
+    turtle.turnLeft()
+end
+
+local function digMove()
+    while not turtle.forward() do
+        turtle.dig()
+        turtle.attack()
+    end
+end
+
+local function digMoveUp()
+    while not turtle.up() do
+        turtle.digUp()
+        turtle.attackUp()
+    end
+end
+
+local function digMoveDown()
+    while not turtle.down() do
+        turtle.digDown()
+        turtle.attackDown()
+    end
+end
+
+--Global Functions
+function MineVein(ore)
+    while true do 
+        --Blocks in surrounding area
+        local blocks = LookAround()
+        --The blocks that need to be mined
+        local queue = {}
+        --The amount of block paths that need to be cleared
+        local queueCount = 0
+
+        for k,v in pairs(blocks) do
+            if blocks[k].name == ore.name then
+                queueCount = queueCount + 1
+                queue[queueCount] = k
+            end
+        end
+
+        if queueCount == 0 then
+            break  
+        else
+            for k,v in pairs(queue) do
+                DigSide(queue[k])
+            end
+            for k,v in pairs(queue) do
+                DigMoveSide(queue[k])
+                MineVein(ore)
+                queueCount = queueCount-1
+                GoBack(queue[k])
+            end
+        end
+    end
+
+end
+
+function LookAround()
+    SurroundingBlocks = {}
+    for i=1,4 do
+        --Get Block Info
+        Success, Block = turtle.inspect()
+        --Store block to blocks table
+        SurroundingBlocks[i] = Block
+        --Move on to next block
+        turtle.turnRight()
+    end
+    --Get Top Blocks
+    Success, BlockUp = turtle.inspectUp()
+    --Get Bottom Block
+    Success, BlockDown = turtle.inspectDown()
+    --Store Vertical Blocks
+    SurroundingBlocks[5] = BlockUp
+    SurroundingBlocks[6] = BlockDown
+
+    return SurroundingBlocks
+end
+
+function DigMoveSide(num)
+    if num == 1 then
+        digMove()
+    elseif num == 2 then
+        turtle.turnRight()
+        digMove()
+    elseif num == 3 then
+        turnAround()
+        digMove()
+    elseif num == 4 then
+        turtle.turnLeft()
+        digMove()
+    elseif num == 5 then
+        digMoveUp()
+    elseif num == 6 then
+        digMoveDown()
+    else
+        return false;
+    end
+end
+
+function DigSide(num)
+    if num == 1 then
+        turtle.dig()
+    elseif num == 2 then
+        turtle.turnRight()
+        turtle.dig()
+        turtle.turnLeft()
+    elseif num == 3 then
+        turnAround()
+        turtle.dig()
+        turnAround()
+    elseif num == 4 then
+        turtle.turnLeft()
+        turtle.dig()
+        turtle.turnRight()
+    elseif num == 5 then
+        turtle.digUp()
+    elseif num == 6 then
+        turtle.digDown()
+    else
+        return false;
+    end
+end
+
+function GoBack(initial_direction)
+    if initial_direction == 1 then
+        turtle.back()
+    elseif initial_direction == 2 then
+        turnAround()
+        turtle.forward()
+        turtle.turnRight()
+    elseif initial_direction == 3 then
+        turnAround()
+        turtle.forward()
+    elseif initial_direction == 4 then
+        turnAround()
+        turtle.forward()
+        turtle.turnLeft()
+    elseif initial_direction == 5 then
+        turtle.down()
+    elseif initial_direction == 6 then
+        turtle.up()
+    else
+        return false
+    end
+end
+
+function GetSides()
+    return side
+end
