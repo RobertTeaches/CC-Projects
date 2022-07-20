@@ -1,17 +1,31 @@
 --Global Variables
-side = {}
-side[1] = "front"
-side[2] = "right"
-side[3] = "back"
-side[4] = "left"
-side[5] = "top"
-side[6] = "bottom"
-side["front"] = 1
-side["right"] = 2
-side["back"] = 3
-side["left"] = 4
-side["top"] = 5
-side["bottom"] = 6
+sides = {
+    "front",
+    "right",
+    "back",
+    "left",
+    "top",
+    "bottom",
+    front = 1,
+    right = 2,
+    back = 3,
+    left = 4,
+    top = 5,
+    bottom = 6,
+}
+
+--May not be neccessary
+local function getSide(side)
+    --Grab correct side using "sides" table, allowing string and num input
+    if type(side) == "string" then 
+        num = sides[side] 
+    elseif type(side) == "number" then
+         num = side
+    else 
+        return
+    end
+    return num
+end
 
 --Local Functions
 
@@ -41,62 +55,68 @@ local function digMoveDown()
     end
 end
 
---Global Functions
-function MineVein(ore)
+--Global Functions | We should follow CraftOS naming principles(camelCase)
+function mineVein(ore)
+    --The blocks that need to be mined
+    local queue = {}
+    --The amount of block paths that need to be cleared
+    local queueCount = 0
+
     while true do 
         --Blocks in surrounding area
-        local blocks = LookAround()
-        --The blocks that need to be mined
-        local queue = {}
-        --The amount of block paths that need to be cleared
-        local queueCount = 0
+        local blocks = lookAround()
 
-        for k,v in pairs(blocks) do
-            if blocks[k].name == ore.name then
+
+        for index,block in pairs(blocks) do
+            if block.name == ore.name then
                 queueCount = queueCount + 1
-                queue[queueCount] = k
+                queue[queueCount] = index
             end
         end
 
+        --If the Queue is empty, we shouldn't end the loop, we should continue looking for more blocks,
+        -- and move forward to get a new location
         if queueCount == 0 then
-            break  
+            digMove()  
         else
             for k,v in pairs(queue) do
-                DigSide(queue[k])
+                digSide(queue[k])
             end
             for k,v in pairs(queue) do
-                DigMoveSide(queue[k])
-                MineVein(ore)
+                digAndMoveToSide(queue[k])
+                mineVein(ore)
                 queueCount = queueCount-1
-                GoBack(queue[k])
+                goBack(queue[k])
             end
         end
+
     end
 
 end
 
-function LookAround()
-    SurroundingBlocks = {}
+function lookAround()
+    local surroundingBlocks = {}
     for i=1,4 do
         --Get Block Info
-        Success, Block = turtle.inspect()
+        local success, block = turtle.inspect()
         --Store block to blocks table
-        SurroundingBlocks[i] = Block
+        surroundingBlocks[i] = block
         --Move on to next block
         turtle.turnRight()
     end
     --Get Top Blocks
-    Success, BlockUp = turtle.inspectUp()
+    local success, blockUp = turtle.inspectUp()
     --Get Bottom Block
-    Success, BlockDown = turtle.inspectDown()
+    local success, blockDown = turtle.inspectDown()
     --Store Vertical Blocks
-    SurroundingBlocks[5] = BlockUp
-    SurroundingBlocks[6] = BlockDown
+    surroundingBlocks[5] = blockUp
+    surroundingBlocks[6] = blockDown
 
-    return SurroundingBlocks
+    return surroundingBlocks
 end
 
-function DigMoveSide(num)
+function digAndMoveToSide(side)
+    local num = getSide(side)
     if num == 1 then
         digMove()
     elseif num == 2 then
@@ -117,7 +137,8 @@ function DigMoveSide(num)
     end
 end
 
-function DigSide(num)
+function digSide(side)
+    local num = getSide(side)
     if num == 1 then
         turtle.dig()
     elseif num == 2 then
@@ -141,7 +162,7 @@ function DigSide(num)
     end
 end
 
-function GoBack(initial_direction)
+function goBack(initial_direction)
     if initial_direction == 1 then
         turtle.back()
     elseif initial_direction == 2 then
@@ -164,6 +185,8 @@ function GoBack(initial_direction)
     end
 end
 
+
+--Never used
 function GetSides()
-    return side
+    return sides
 end
