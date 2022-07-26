@@ -12,7 +12,7 @@ local function draw()
     paintutils.drawBox(prizePos.x, prizePos.y, 1, 1, prizeColor)
 end
 
-
+--Core Update Loop
 function Update()
     draw()
     if playerPos.x == prizePos.x and
