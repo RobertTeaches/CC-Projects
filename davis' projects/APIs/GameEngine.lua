@@ -26,9 +26,11 @@ local function keyUpInput()
    end 
 end
 
+local hasStarted = false
 function init()
+    if hasStarted then return end
     parallel.waitForAny(gameLoop, keyDownInput, keyUpInput)
-
+    hasStarted = true
     --We choose this range due to the number range provided for keyCodes here:
     -- https://github.com/cc-tweaked/CC-Tweaked/blob/ebef3117f201aaece14b9ac6a58d75e671456acf/src/main/resources/data/computercraft/lua/rom/apis/keys.lua#L149
     for i in 1,350 do
