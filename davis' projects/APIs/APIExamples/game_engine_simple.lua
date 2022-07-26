@@ -1,4 +1,4 @@
-engine = require("davis' projects.APIs.GameEngine")
+os.loadAPI("st-apis/GameEngine")
 
 --Game Variables
 local playerColor = colors.gray
@@ -19,22 +19,22 @@ function Update()
        playerPos.y == prizePos.y then
         playerColor = colors.green
     end
-    if engine.pressedKeys["d"] then 
+    if GameEngine.pressedKeys["d"] then 
         playerPos = playerPos + vector.new(1,0)
-    elseif engine.pressedKeys["a"] then 
+    elseif GameEngine.pressedKeys["a"] then 
         playerPos = playerPos + vector.new(-1,0)
-    elseif engine.pressedKeys["s"] then 
+    elseif GameEngine.pressedKeys["s"] then 
         playerPos = playerPos + vector.new(0,-1)
-    elseif engine.pressedKeys["w"] then 
+    elseif GameEngine.pressedKeys["w"] then 
         playerPos = playerPos + vector.new(0,1)
     end
 end
 
 --Start() is not neccessary as a function, I just contain the init stuff inside
---The engine needs two things, to add your own Update function to the loop, and to start the engine
+--The GameEngine needs two things, to add your own Update function to the loop, and to start the GameEngine
 function Start()
-    engine.addUpdateFunction(Update)
-    engine.init()
+    GameEngine.addUpdateFunction(Update)
+    GameEngine.init()
 end
 
 
