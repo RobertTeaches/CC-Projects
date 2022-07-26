@@ -124,7 +124,6 @@ function Update()
         end
         draw()
         apple_code()
-        sleep(0.05)
 end
 function Start()
     spawn_apples(3)
