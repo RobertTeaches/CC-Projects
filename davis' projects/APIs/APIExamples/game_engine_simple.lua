@@ -1,32 +1,39 @@
-os.loadAPI("st-apis/GameEngine")
+os.loadAPI("disk/STProjects/APIs/GameEngine.lua")
 
 --Game Variables
 local playerColor = colors.gray
 local playerPos = vector.new(1,1)
 local prizeColor = colors.yellow
 local prizePos = vector.new(math.random(5,50), math.random(1,19))
+local playerWidth = 1
+local playerHeight = 2
+local isWin = false
 
 --Game Functions
 local function draw()
-    paintutils.drawBox(playerPos.x, playerPos.y, 1, 2, playerColor)
-    paintutils.drawBox(prizePos.x, prizePos.y, 1, 1, prizeColor)
+    paintutils.drawBox(playerPos.x, playerPos.y, playerPos.x+playerWidth, playerPos.y+playerHeight, playerColor)
+    if not isWin then
+        paintutils.drawPixel(prizePos.x, prizePos.y, prizeColor)
+    end
+    term.setBackgroundColor(colors.black)
 end
 
 --Core Update Loop
 function Update()
     draw()
-    if playerPos.x == prizePos.x and
-       playerPos.y == prizePos.y then
+    if (prizePos.x >= playerPos.x and prizePos.x <= playerPos.x+playerWidth) and
+       (prizePos.y >= playerPos.y and prizePos.y <= playerPos.y+playerHeight) then
         playerColor = colors.green
+        isWin = true
     end
     if GameEngine.pressedKeys["d"] then 
-        playerPos = playerPos + vector.new(1,0)
+        playerPos.x = playerPos.x + 1
     elseif GameEngine.pressedKeys["a"] then 
-        playerPos = playerPos + vector.new(-1,0)
+        playerPos.x = playerPos.x - 1
     elseif GameEngine.pressedKeys["s"] then 
-        playerPos = playerPos + vector.new(0,-1)
+        playerPos.y = playerPos.y + 1
     elseif GameEngine.pressedKeys["w"] then 
-        playerPos = playerPos + vector.new(0,1)
+        playerPos.y = playerPos.y -1
     end
 end
 
@@ -37,4 +44,5 @@ function Start()
     GameEngine.init()
 end
 
+Start()
 

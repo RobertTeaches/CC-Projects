@@ -1,17 +1,19 @@
 --Game Engine does not handling drawing, only running a loop and reading input
 pressedKeys = {}
-updateTime = 0.1
 _onUpdate_Functions = {}
+refreshRate = 15 -- WARNING: MAX REFRESH RATE IS 20FPS.
+updateTime = math.floor((100 * (1/refreshRate))) / 100
 
 
 --Main Loop
 local function gameLoop()
-
+    --Calls each update function every "updateTime" seconds
     while true do
-        sleep(0.1)
+        term.clear()
         for i, v in pairs(_onUpdate_Functions) do
             v()
         end
+        sleep(updateTime)
     end
 end
 --Key Loop
@@ -28,11 +30,14 @@ local function keyUpInput()
    end
 end
 
+function addUpdateFunction(fun)
+    table.insert(_onUpdate_Functions, fun)
+end
+
 local hasStarted = false
 function init()
     if hasStarted then return end
 
-    parallel.waitForAny(gameLoop, keyDownInput, keyUpInput)
     hasStarted = true
     --We choose this range due to the number range provided for keyCodes here:
     -- https://github.com/cc-tweaked/CC-Tweaked/blob/ebef3117f201aaece14b9ac6a58d75e671456acf/src/main/resources/data/computercraft/lua/rom/apis/keys.lua#L149
@@ -41,10 +46,5 @@ function init()
             pressedKeys[keys.getName(i)] = false
         end
     end
+    parallel.waitForAny(gameLoop, keyDownInput, keyUpInput)
 end
-
-function addUpdateFunction(fun)
-    table.insert(_onUpdate_Functions, fun)
-end
-
-return {init = init, addUpdateFunction = addUpdateFunction, pressedKeys = pressedKeys}
