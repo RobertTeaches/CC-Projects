@@ -83,7 +83,7 @@ local function createFarm(size, addWater)
                 return true
             end
         else
-            if x == size/2 or x + 1 == size/2 and y == size/2 or y + 1 == size/2 then
+            if (x == size/2 or x == (size/2) + 1 ) and (y == size/2 or y == (size/2) + 1) then
                 return true
             end
         end
