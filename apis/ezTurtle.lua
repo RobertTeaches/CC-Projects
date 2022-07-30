@@ -40,3 +40,30 @@ function confirmInventory(inventory)
     end
     return true
 end
+
+function equipTool(toolName, side)
+    side = side or "right"
+    side = string.lower(side)
+    if selectSlotWithItem(toolName) then
+        if side == "right" then turtle.equipRight()
+        elseif side == "left" then turtle.equipLeft()
+        else error("Supplied Side must be left or right!")
+        end
+    else
+        error(string.format("Could not find %s in turtle inventory", toolName))
+    end
+end
+
+function clearTools()
+    if selectEmptySlot() then
+        turtle.equipRight()
+    else 
+        error "Could not find an empty slot!"
+    end
+
+    if selectEmptySlot() then
+        turtle.equipLeft()
+    else
+        error "Could not find an empty slot!"
+    end
+end
