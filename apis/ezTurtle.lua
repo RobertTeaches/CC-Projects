@@ -17,8 +17,10 @@ function selectSlotWithItem(item)
     end
     return false
 end
---- func desc
+---Confirms that inventory matches the turtle's inventory
 ---@param inventory table{string}
+---the inventory must be a 16-item table, with each slot either being the name of an
+---item, or nil
 function confirmInventory(inventory)
     for i = 1,16 do
         turtle.select(i)
