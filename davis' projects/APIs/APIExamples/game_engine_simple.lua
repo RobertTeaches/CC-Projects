@@ -1,4 +1,4 @@
-os.loadAPI("disk/STProjects/APIs/GameEngine.lua")
+os.loadAPI("api/GameEngine.lua")
 
 --Game Variables
 local playerColor = colors.gray
@@ -11,6 +11,7 @@ local isWin = false
 
 --Game Functions
 local function draw()
+    term.clear()
     paintutils.drawBox(playerPos.x, playerPos.y, playerPos.x+playerWidth, playerPos.y+playerHeight, playerColor)
     if not isWin then
         paintutils.drawPixel(prizePos.x, prizePos.y, prizeColor)
@@ -26,13 +27,13 @@ function Update()
         playerColor = colors.green
         isWin = true
     end
-    if GameEngine.pressedKeys["d"] then 
+    if GameEngine.pressedKeys["d"] then
         playerPos.x = playerPos.x + 1
-    elseif GameEngine.pressedKeys["a"] then 
+    elseif GameEngine.pressedKeys["a"] then
         playerPos.x = playerPos.x - 1
-    elseif GameEngine.pressedKeys["s"] then 
+    elseif GameEngine.pressedKeys["s"] then
         playerPos.y = playerPos.y + 1
-    elseif GameEngine.pressedKeys["w"] then 
+    elseif GameEngine.pressedKeys["w"] then
         playerPos.y = playerPos.y -1
     end
 end

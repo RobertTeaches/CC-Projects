@@ -9,7 +9,6 @@ updateTime = math.floor((100 * (1/refreshRate))) / 100
 local function gameLoop()
     --Calls each update function every "updateTime" seconds
     while true do
-        term.clear()
         for i, v in pairs(_onUpdate_Functions) do
             v()
         end

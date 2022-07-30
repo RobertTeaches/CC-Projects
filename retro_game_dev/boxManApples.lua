@@ -28,10 +28,10 @@ Apple = {
     --Our Lua constructor I hate it  i hate it i hate it i hate it haithea taeitaetat
     new = function(self, o, position, speed)
         o = o or {}
-        o.position = position
-        o.velocity = speed
         setmetatable(o, self)
         self.__index = self
+        o.position = position
+        o.velocity = speed
         return o
     end,
     draw = function(self)
