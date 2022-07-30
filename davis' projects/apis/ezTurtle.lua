@@ -31,10 +31,13 @@ function confirmInventory(inventory)
             return false
         end
         if slotInfo then
-            if not string.find(slotInfo.name, inventory[i]) then
+            if not string.find(slotInfo.name, inventory[i])  
+               and inventory[i] ~= "any" 
+               then
                 print("Incorrect Turtle Inventory Supplied.")
                 print(string.format("In slot %d was expecting a %s item", i, inventory[i]))
                 return false
+            end
             end
         end 
     end
