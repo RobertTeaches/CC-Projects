@@ -28,53 +28,53 @@ local function confirmInventory()
 end
 
 local function createFarm(size, addWater)
-    --[[
-        size = 3, addWater = true
-        D D D 
-        D W D
-        D D D    
-
-        size = 4, addWater = true
-        D D D D 
-        D D D D 
-        D D D D
-        D D D D --Seems to not work well with size 4
-        
-        size = 5, addwater = true
-        D D D D D
-        D D D D D
-        D D W D D
-        D D D D D
-        D D D D D
-        
-        size = 6
-        D D D D D D
-        D D D D D D 
-        D D W W D D
-        D D W W D D
-        D D D D D D 
-        D D D D D D 
-
-        size = 7
-        D D D D D D D 
-        D D D D D D D 
-        D D D D D D D 
-        D D D W D D D 
-        D D D D D D D 
-        D D D D D D D 
-        D D D D D D D 
-
-        size = 8
-        D D D D D D D D 
-        D D D D D D D D 
-        D D D D D D D D
-        D D D W W D D D
-        D D D W W D D D
-        D D D D D D D D
-        D D D D D D D D
-        D D D D D D D D
-    ]]--
     function shouldPlaceWater(x, y)
+        --[[
+            size = 3, addWater = true
+            D D D 
+            D W D
+            D D D    
+    
+            size = 4, addWater = true
+            D D D D 
+            D D D D 
+            D D D D
+            D D D D --Seems to not work well with size 4
+            
+            size = 5, addwater = true
+            D D D D D
+            D D D D D
+            D D W D D
+            D D D D D
+            D D D D D
+            
+            size = 6
+            D D D D D D
+            D D D D D D 
+            D D W W D D
+            D D W W D D
+            D D D D D D 
+            D D D D D D 
+    
+            size = 7
+            D D D D D D D 
+            D D D D D D D 
+            D D D D D D D 
+            D D D W D D D 
+            D D D D D D D 
+            D D D D D D D 
+            D D D D D D D 
+    
+            size = 8
+            D D D D D D D D 
+            D D D D D D D D 
+            D D D D D D D D
+            D D D W W D D D
+            D D D W W D D D
+            D D D D D D D D
+            D D D D D D D D
+            D D D D D D D D
+        ]]--
         if size == 4 then return false end
         if x == size or x == 1 then return false end
         if y == size or y == 1 then return false end
