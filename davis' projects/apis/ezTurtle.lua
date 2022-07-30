@@ -26,14 +26,14 @@ function confirmInventory(inventory)
         turtle.select(i)
         local slotInfo = turtle.getItemDetail()
         if (inventory[i] == nil) ~= (slotInfo == nil) then
-            error("Incorrect Turtle Inventory Supplied.")
-            print(string.format("In slot %d was expecting a %s item"), i, inventory[i])
+            print("Incorrect Turtle Inventory Supplied.")
+            print(string.format("In slot %d was expecting a %s item", i, inventory[i]))
             return false
         end
         if slotInfo then
             if not string.find(slotInfo.name, inventory[i]) then
-                error("Incorrect Turtle Inventory Supplied.")
-                print(string.format("In slot %d was expecting a %s item"), i, inventory[i])
+                print("Incorrect Turtle Inventory Supplied.")
+                print(string.format("In slot %d was expecting a %s item", i, inventory[i]))
                 return false
             end
         end 
@@ -47,10 +47,10 @@ function equipTool(toolName, side)
     if selectSlotWithItem(toolName) then
         if side == "right" then turtle.equipRight()
         elseif side == "left" then turtle.equipLeft()
-        else error("Supplied Side must be left or right!")
+        else print("Supplied Side must be left or right!")
         end
     else
-        error(string.format("Could not find %s in turtle inventory", toolName))
+        print(string.format("Could not find %s in turtle inventory", toolName))
     end
 end
 
@@ -66,4 +66,11 @@ function unequipTools()
     else
         error "Could not find an empty slot!"
     end
+end
+
+--Allow ezTurtle to work as command line
+args = {...}
+if args[1] == "unequipTools" or args[1] == "unequip" then
+    unequipTools()
+    --Add more arg functions here
 end

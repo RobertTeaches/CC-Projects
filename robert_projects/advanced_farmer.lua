@@ -1,20 +1,14 @@
+os.loadAPI("ezTurtle.lua")
 emptySlot = 11
 produceSlot = 12
 
 
 local function plantSeed()
-    for k,i in pairs(seedSlots) do
-        turtle.select(i)
-        detail = turtle.getItemDetail()
-        if detail then
-            if string.find(detail.name, "seeds") then
-                turtle.placeDown()
-                break
-            end
-        end
+    if ezTurtle.selectSlotWithItem("seeds") then
+        turtle.placeDown()
+    else
+        print("Ran out of seeds!")
     end
-    --We use should use an algorithm/formula at the beginning to ensure there are enough seeds
-    if detail == nil then print("Ran out of seeds!") end
     turtle.select(emptySlot)   
 end
 
