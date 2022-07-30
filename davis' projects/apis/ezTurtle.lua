@@ -54,7 +54,7 @@ function equipTool(toolName, side)
     end
 end
 
-function clearTools()
+function unequipTools()
     if selectEmptySlot() then
         turtle.equipRight()
     else 
