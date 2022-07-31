@@ -1,12 +1,4 @@
-function kn(input)
-    local names = 
-    {
-        [1] = "left",
-        [2] = "middle",
-        [3] = "right"
-    }
-    return names[input]
-end
+--POTENTIAL API CODE START
 
 buttons = {}
 labels = {}
@@ -104,8 +96,13 @@ local function checkButtonClick(x,y)
     end
     return false
 end
+--POTENTIAL API CODE END
+
 
 term.setCursorBlink(true)
+
+
+
 local function mainMenu()
     local menu = window.create(term.current(),1,1,width,height,true)
     mainWindow = menu
