@@ -2,7 +2,18 @@ buttons = {}
 labels = {}
 mainWindow = nil
 width,height = term.getSize()
+windowColor = colors.black
 
+--- creates a 'button' ui object to be dislpayed in the window. Does not automatically draw the buttons, must use drawButtons()
+---@param buttonText string
+---@param x number
+---@param y number
+---@param width number or nil
+---@param height number or nil
+---@param foreColor [color] or nil
+---@param backColor [color] or nil
+---@param buttonID any or nil
+---@param window {window} or nil
 function createButton(buttonText, 
                             x,y, width, height, 
                             foreColor, backColor, 
@@ -48,11 +59,12 @@ function createButton(buttonText,
         parentWindow = window
     }
     buttons[buttonID] = buttonObject
-    window.setBackgroundColor(colors.black)
+    window.setBackgroundColor(windowColor)
 end
 
 function drawButtons()
     for i,button in pairs(buttons) do
+        
         local bTColor = ""
         local bBColor = ""
         local x,y = button.position.x, button.position.y
@@ -64,13 +76,12 @@ function drawButtons()
         end
         --print(string.len(buttonText), bTColor, string.len(bBColor))
         paintutils.drawFilledBox(x, y, x + width - 1, y + height - 1, button.backColor)
-        
         window.setCursorPos(x,y + math.floor(height/2))
         window.setBackgroundColor(button.backColor)
         window.setTextColor(button.foreColor)
         window.blit(button.text, bTColor, bBColor)
     end
-    term.setBackgroundColor(colors.black)
+    term.setBackgroundColor(windowColor)
 end
 
 function checkButtonClick(x,y)
