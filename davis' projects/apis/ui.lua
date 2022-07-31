@@ -105,6 +105,12 @@ function checkButtonClick(x,y)
     return false
 end
 
+function clear(color)
+    color = color or windowColor
+    mainWindow.setBackgroundColor(color)
+    mainWindow.clear()
+end
+
 function createMainWindow()
     print("main window made")
     mainWindow = window.create(term.current(),1,1,width,height,true)
