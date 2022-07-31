@@ -38,7 +38,6 @@ function confirmInventory(inventory)
                 print(string.format("In slot %d was expecting a %s item", i, inventory[i]))
                 return false
             end
-            end
         end 
     end
     return true
