@@ -1,5 +1,8 @@
 os.loadAPI("ui.lua")
 
+local programPath = "../retro_game_dev/boxManApples.lua"
+local programName = "boxManApples"
+
 term.setCursorBlink(true)
 
 local function mainMenu()
@@ -19,10 +22,8 @@ function readMouse(b,cx,cy)
         print(buttonKey)
         if buttonKey == "mainButton" then
             term.setBackgroundColor(colors.black)
-            term.clear()
-            term.setTextColor(colors.white)
-            term.setCursorPos(1, ui.height/2 - 2)
-            write("Thank you For clicking the button...")
+            term.clear()            
+            shell.run(programPath)
         elseif buttonKey == "exit" then
             term.setBackgroundColor(colors.black)
             term.clear()

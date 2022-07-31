@@ -7,15 +7,19 @@ local sounds = {
     "item.trident.thunder",
     "entity.creeper.primed",
     "item.crossbow.loading_end",
-    "item.bucket.fill",
-    "item.bucket.fill",
-    "item.bucket.fill",
-    "item.bucket.fill",
-    "item.bucket.fill",
-    "item.bucket.fill",
-    "item.bucket.fill",
-    "item.bucket.fill",
-
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
+    "item.crossbow.loading_end",
     --and so on
 }
 local speaker = peripheral.find("speaker")
@@ -23,13 +27,14 @@ if not speaker then error("Please attach a speaker or I wont' work!") end
 
 --Trying two approaches, one dynamic
 local function soundboardMenu()
-    ui.createMainWindow(colors.blue)
-    local buttonWidth, buttonHeight = 3,2
+    window = ui.createMainWindow(colors.blue)
+    local buttonWidth, buttonHeight = 4,3
     local spacing = 1
     local numOfColumns = math.min( math.floor(ui.width / (buttonWidth + spacing*2)), #sounds)
     local numOfRows = math.ceil(#sounds / numOfColumns)
     local totalColumnWidth = numOfColumns * (buttonWidth + spacing)
-    local startPoint = vector.new((ui.width - totalColumnWidth)/2, ui.height/(numOfRows))
+    local totalRowHeight = numOfRows * (buttonHeight + spacing)
+    local startPoint = vector.new((ui.width - totalColumnWidth)/2, ((ui.height - totalRowHeight)/2) + buttonHeight/2)
     local i = 1
     for y = 0, numOfRows-1 do
         for x = 0, numOfColumns-1 do
