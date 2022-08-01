@@ -28,10 +28,10 @@ Apple = {
     --Our Lua constructor I hate it  i hate it i hate it i hate it haithea taeitaetat
     new = function(self, o, position, speed)
         o = o or {}
-        setmetatable(o, self)
-        self.__index = self
         o.position = position
         o.velocity = speed
+        setmetatable(o, self)
+        self.__index = self
         return o
     end,
     draw = function(self)
@@ -113,24 +113,20 @@ function apple_code()
 end
 
 
-function KeyInput()
-    while true do 
-        local e, key = os.pullEvent("key")
-                local kName = keys.getName(key)
-                if kName == "a" then
-                    player:move(vector.new(-1.8,0))
-                elseif kName == "d" then
-                    player:move(vector.new(1.8,0))
-                end
-    end
-end
+--Engine Code Here
+engine = require("davis' projects.APIs.GameEngine")--Or CraftOS Style, where we just place it in an "api" folder and make it global
 
-function GameLoop()
-    while true do
+function Update()
+        if engine.pressedKeys["a"] then
+            player:move(vector.new(1,0))
+        elseif engine.pressedKeys["d"] then
+            player:move(vector.new(-1,0))
+        end
         draw()
         apple_code()
-        sleep(0.05)
-    end   
 end
-spawn_apples(3)
-parallel.waitForAny(GameLoop, KeyInput)
+function Start()
+    spawn_apples(3)
+    engine.addUpdateFunction(Update)
+    engine.init()
+end
