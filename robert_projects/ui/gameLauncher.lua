@@ -22,7 +22,7 @@ function readMouse(b,cx,cy)
         print(buttonKey)
         if buttonKey == "mainButton" then
             term.setBackgroundColor(colors.black)
-            term.clear()            
+            term.clear()          
             shell.run(programPath)
         elseif buttonKey == "exit" then
             term.setBackgroundColor(colors.black)

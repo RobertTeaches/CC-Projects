@@ -1,8 +1,8 @@
 buttons = {}
 labels = {}
 mainWindow = nil
-width,height = term.getSize()
-windowColor = colors.yellow
+width,height = 51,19
+windowColor = colors.black
 
 --- creates a 'button' ui object to be dislpayed in the window. Does not automatically draw the buttons, must use drawButtons()
 ---@param buttonText string
@@ -73,16 +73,19 @@ function drawButtons()
             bBColor = bBColor..tostring(colors.toBlit(button.backColor))
         end
         --print(string.len(buttonText), bTColor, string.len(bBColor))
+        local old = term.redirect(window)
         paintutils.drawFilledBox(x, y, x + width - 1, y + height - 1, button.backColor)
+        term.redirect(old)
         window.setCursorPos(x,y + math.floor(height/2))
         window.setBackgroundColor(button.backColor)
         window.setTextColor(button.foreColor)
         window.blit(button.text, bTColor, bBColor)
     end
-    term.setBackgroundColor(windowColor)
+    window.setBackgroundColor(windowColor)
 end
 
-function checkButtonClick(x,y)
+function checkButtonClick(x,y, window)
+    window = window or false
     local function pointCollision(bX,bY, bW, bH, x, y)
         if bX + bW -1 >= x and bX - 1 <= x
         and bY + bH -1 >= y and bY - 1 <= y
@@ -93,9 +96,8 @@ function checkButtonClick(x,y)
         end
     end
     for key,button in pairs(buttons) do
-        if pointCollision(button.position.x, button.position.y,
-                            button.size.x, button.size.y,
-                             x, y)
+        if pointCollision(button.position.x, button.position.y, button.size.x, button.size.y, x, y)
+        and (not window or window == button.parentWindow)
         then
             return key
         end
@@ -111,11 +113,16 @@ end
 
 function createMainWindow(parentTerm)
     parentTerm = parentTerm or term.current()
+    width,height = parentTerm.getSize()
+    print(width,height)
     print("main window made")
     mainWindow = window.create(parentTerm,1,1,width,height,true)
     return mainWindow
 end
 
+function getSize()
+    return width,height
+end
 --For 'require' implementations
-return {buttons = buttons, mainWindow = mainWindow, width = width, height = height, windowColor = windowColor,
+return {buttons = buttons, mainWindow = mainWindow, getSize = getSize, windowColor = windowColor,
         createButton = createButton, drawButtons = drawButtons, checkButtonClick = checkButtonClick, clear = clear, createMainWindow = createMainWindow}
