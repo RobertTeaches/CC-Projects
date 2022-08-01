@@ -10,7 +10,7 @@ local function mainMenu()
     local b1pos = vector.new(ui.width/2, ui.height/2)
     ui.createButton("Menu", 1,1, 6, 1, colors.black, colors.grey)
     ui.createButton("Exit", 46, 1, 5, 1, colors.white, colors.red, "exit")
-    ui.createButton("spawn_apples", b1pos.x, b1pos.y, 7, 4, colors.black, colors.lightBlue, "mainButton")
+    ui.createButton("Apples", b1pos.x, b1pos.y, 7, 4, colors.black, colors.lightBlue, "mainButton")
     ui.drawButtons()
 end
 
