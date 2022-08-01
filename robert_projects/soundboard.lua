@@ -18,8 +18,6 @@ local sounds = {
     "item.crossbow.loading_end",
     "item.crossbow.loading_end",
     "item.crossbow.loading_end",
-    "item.crossbow.loading_end",
-    "item.crossbow.loading_end",
     --and so on
 }
 local speaker = peripheral.find("speaker")
