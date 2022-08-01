@@ -59,6 +59,7 @@ function createButton(buttonText,x,y, width, height, foreColor, backColor,button
     window.setBackgroundColor(windowColor)
 end
 
+
 function drawButtons()
     for i,button in pairs(buttons) do
 
@@ -108,11 +109,13 @@ function clear(color)
     mainWindow.clear()
 end
 
-function createMainWindow()
+function createMainWindow(parentTerm)
+    parentTerm = parentTerm or term.current()
     print("main window made")
-    mainWindow = window.create(term.current(),1,1,width,height,true)
+    mainWindow = window.create(parentTerm,1,1,width,height,true)
     return mainWindow
 end
 
+--For 'require' implementations
 return {buttons = buttons, mainWindow = mainWindow, width = width, height = height, windowColor = windowColor,
         createButton = createButton, drawButtons = drawButtons, checkButtonClick = checkButtonClick, clear = clear, createMainWindow = createMainWindow}
