@@ -10,22 +10,19 @@ windowColor = colors.yellow
 ---@param y number
 ---@param width number or nil
 ---@param height number or nil
----@param foreColor [color] or nil
----@param backColor [color] or nil
+---@param foreColor color or nil
+---@param backColor color or nil
 ---@param buttonID any or nil
----@param window {window} or nil
-function createButton(buttonText, 
-                            x,y, width, height, 
-                            foreColor, backColor, 
-                            buttonID, window)
-                            
+---@param window table or nil
+function createButton(buttonText,x,y, width, height, foreColor, backColor,buttonID, window)
+
     --Setting defaults, probably not needed in project-guide
     window = window or mainWindow
     --Id should exist as a key that has not been used in the button table,
     --otherwise it will be the next int index
     buttonID = buttonID or #buttons + 1
     if buttons[buttonID] ~= nil then print(buttonID.." is used") buttonID = #buttons + 1 end
-    
+
     backColor = backColor or colors.white
     foreColor = foreColor or colors.gray
     width = width or 5
@@ -39,7 +36,7 @@ function createButton(buttonText,
     --so that blit covers the entire button, and we won't have
     --any text issues
     local wDelta = width - textLength
-    if wDelta < 0 then 
+    if wDelta < 0 then
         width = textLength
     else
         local beforeNum = math.floor(wDelta/2)
@@ -48,7 +45,7 @@ function createButton(buttonText,
         for i = 1, beforeNum do buttonText = " "..buttonText end
         for i = 1, afterNu do buttonText = buttonText.." " end
     end
-    
+
 
     local buttonObject = {
         text = buttonText,
@@ -64,7 +61,7 @@ end
 
 function drawButtons()
     for i,button in pairs(buttons) do
-        
+
         local bTColor = ""
         local bBColor = ""
         local x,y = button.position.x, button.position.y
@@ -86,20 +83,20 @@ end
 
 function checkButtonClick(x,y)
     local function pointCollision(bX,bY, bW, bH, x, y)
-        if bX + bW -1 >= x and bX - 1 <= x 
-        and bY + bH -1 >= y and bY - 1 <= y 
-        then 
+        if bX + bW -1 >= x and bX - 1 <= x
+        and bY + bH -1 >= y and bY - 1 <= y
+        then
             return true
-        else 
+        else
             return false
         end
     end
     for key,button in pairs(buttons) do
-        if pointCollision(button.position.x, button.position.y, 
+        if pointCollision(button.position.x, button.position.y,
                             button.size.x, button.size.y,
-                             x, y) 
+                             x, y)
         then
-            return key                     
+            return key
         end
     end
     return false
