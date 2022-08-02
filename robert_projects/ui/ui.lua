@@ -68,7 +68,8 @@ end
 ---@param gridWidth number|nil
 ---@param offset vector|nil
 ---@param buttonIDPrefix string|nil
-function createButtonsInGrid(text, spacing, buttonWidth, buttonHeight,  window, gridWidth, offset, buttonIDPrefix)
+---@param buttonIDList {any:string}|nil Must be same length as text table!
+function createButtonsInGrid(text, spacing, buttonWidth, buttonHeight,  window, gridWidth, offset, buttonIDPrefix, buttonIDList)
 
     local longestWord = 0
     for i,t in pairs(text) do 
@@ -78,6 +79,9 @@ function createButtonsInGrid(text, spacing, buttonWidth, buttonHeight,  window, 
     spacing = spacing or 1
     gridWidth = gridWidth or width
     offset = offset or vector.new(0,0)
+    buttonIDList = buttonIDList or nil
+    if buttonIDList and #buttonIDList ~= #text then buttonIDList = nil end
+
     local numOfColumns = math.min( math.floor(gridWidth / (buttonWidth + spacing*2)), #text)
     local numOfRows = math.ceil(#text / numOfColumns)
     local totalColumnWidth = numOfColumns * (buttonWidth + spacing)
@@ -90,7 +94,14 @@ function createButtonsInGrid(text, spacing, buttonWidth, buttonHeight,  window, 
             local bPos = vector.new(x * (buttonWidth + spacing) + startPoint.x,
                                      y * (buttonHeight + spacing) + startPoint.y)
             if string.len(text[i]) > buttonWidth then text[i] = string.sub(text[i], 1, buttonWidth) end
-            local id = (buttonIDPrefix and buttonIDPrefix..tostring(i)) or id
+
+            --Setting id from parameters dynamically
+            if buttonIDList then
+                id = (buttonIDPrefix and (buttonIDPrefix..buttonIDList[i]) or buttonIDList[i])
+            else
+                id = (buttonIDPrefix and (buttonIDPrefix..tostring(i)) or id)
+            end
+            --Create button with proper info and positioning
             createButton(text[i], bPos.x, bPos.y, buttonWidth, buttonHeight, 
                             colors.white, colors.gray, id, window)
             i = i + 1
@@ -157,6 +168,38 @@ function drawLabels()
     end
 end
 
+function quickDrawLabel(text, x,y, width, foreColor, backColor, window)
+    window = window or mainWindow
+    labelID = labelID or #labels + 1
+    x = x or 1
+    y = y or 1
+    --Caching len of text
+    local len = string.len(text)
+    width = width or len
+    foreColor = foreColor or colors.white
+    backColor = backColor or colors.gray
+
+    local wDelta = width - len
+    if wDelta >= 0 then
+        local beforeSpaces = math.floor(wDelta/2)
+        local afterSpaces = math.ceil(wDelta/2)
+        --Adding proper spacing before and after
+        for i = 1,beforeSpaces do labelText = " "..labelText end
+        for i = 1,afterSpaces do labelText = labelText.." " end
+    else --If our label text is bigger than width, we override the provided value
+        width = len
+    end
+
+    local blitFColor, blitBColor = "",""
+    for i = 1,string.len(text) do
+        blitBColor = blitBColor..colors.toBlit(backColor)
+        blitFColor = blitFColor..colors.toBlit(foreColor)
+    end
+    window.setCursorPos(x,y)
+    window.blit(text, blitFColor, blitBColor)
+
+end
+
 function drawButtons()
     for i,button in pairs(buttons) do
 
@@ -179,7 +222,7 @@ function drawButtons()
         --window.setTextColor(button.foreColor)
         window.blit(button.text, bTColor, bBColor)
     end
-    shopWindow.setBackgroundColor(windowColor)
+    mainWindow.setBackgroundColor(windowColor)
 end
 
 function drawAll()
@@ -225,7 +268,7 @@ function createMainWindow(parentTerm)
     print(width,height)
     print("main window made")
     mainWindow = window.create(parentTerm,1,1,width,height,true)
-    return mainWindow
+    return mainWindow, width,height
 end
 
 function getSize()
@@ -235,4 +278,4 @@ end
 return {buttons = buttons, mainWindow = mainWindow, getSize = getSize, createButton = createButton, 
         createButtonsInGrid = createButtonsInGrid,drawButtons = drawButtons, checkButtonClick = checkButtonClick, 
         clear = clear, createMainWindow = createMainWindow, createLabel = createLabel, drawLabels = drawLabels,
-        drawAll = drawAll}
+        drawAll = drawAll, quickDrawLabel = quickDrawLabel}
