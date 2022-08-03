@@ -4,6 +4,27 @@ mainWindow = nil
 width,height = 51,19
 local windowColor = colors.black
 
+--[[
+    Button Object Structure:
+    {
+        text = buttonText,
+        position = vector.new(x,y),
+        size = vector.new(width,height),
+        foreColor = foreColor,
+        backColor = backColor,
+        parentWindow = window
+    }
+    Label Object Structure:
+    {
+        text = labelText,
+        position = vector.new(x,y),
+        width = width,
+        textColor = foreColor,
+        backColor = backColor,
+        parentWindow = window
+    }
+]]
+
 --- creates a 'button' ui object to be dislpayed in the window. Does not automatically draw the buttons, must use drawButtons()
 ---@param buttonText string
 ---@param x number
@@ -168,6 +189,14 @@ function drawLabels()
     end
 end
 
+--One function to create a single label and draw it on the provided window, or mainWindow
+---@param text string
+---@param x number|nil
+---@param y number|nil
+---@param width number|nil
+---@param foreColor colors|nil
+---@param backColor colors|nil
+---@param window craftOSWindow|nil
 function quickDrawLabel(text, x,y, width, foreColor, backColor, window)
     window = window or mainWindow
     labelID = labelID or #labels + 1
@@ -200,36 +229,77 @@ function quickDrawLabel(text, x,y, width, foreColor, backColor, window)
 
 end
 
-function drawButtons()
-    for i,button in pairs(buttons) do
-
-        local bTColor = ""
-        local bBColor = ""
-        local x,y = button.position.x, button.position.y
-        local width,height = button.size.x, button.size.y
-        local window = button.parentWindow
-        for ii = 1,string.len(button.text) do
-            bTColor = bTColor..tostring(colors.toBlit(button.foreColor))
-            bBColor = bBColor..tostring(colors.toBlit(button.backColor))
-        end
-        ------We need to redirect for paintutils, as it uses term.current() for it's window 
-        local old = term.redirect(window)
-        paintutils.drawFilledBox(x, y, x + width - 1, y + height - 1, button.backColor)
-        term.redirect(old)
-        ---------------------------------------------------------------------------
-        window.setCursorPos(x,y + math.floor(height/2))
-        --window.setBackgroundColor(button.backColor)
-        --window.setTextColor(button.foreColor)
-        window.blit(button.text, bTColor, bBColor)
+--Draws a button from the list by index
+function drawButton(index)
+    local button = buttons[index]
+    if not button then return false,"Button could not be found!" end
+    local bTColor = ""
+    local bBColor = ""
+    local x,y = button.position.x, button.position.y
+    local width,height = button.size.x, button.size.y
+    local window = button.parentWindow
+    for ii = 1,string.len(button.text) do
+        bTColor = bTColor..tostring(colors.toBlit(button.foreColor))
+        bBColor = bBColor..tostring(colors.toBlit(button.backColor))
     end
+    ------We need to redirect for paintutils, as it uses term.current() for it's window 
+    local old = term.redirect(window)
+    paintutils.drawFilledBox(x, y, x + width - 1, y + height - 1, button.backColor)
+    term.redirect(old)
+    ---------------------------------------------------------------------------
+    window.setCursorPos(x,y + math.floor(height/2))
+    --window.setBackgroundColor(button.backColor)
+    --window.setTextColor(button.foreColor)
+    window.blit(button.text, bTColor, bBColor)
+
     mainWindow.setBackgroundColor(windowColor)
 end
 
+
+---Goes through all buttons, calling drawButton() with the proper index, 
+---IF window is the button's parent window, OR the param is null, 
+---drawing all buttons on their respective windows
+---@param window craftOSWindow|nil
+function drawButtons(window)
+    for i,button in pairs(buttons) do
+        if not window or button.parentWindow == window then drawButton(i) end
+    end
+end
+
+
+
+---YEILDS FOR duration!! Use small values, less than 1
+---@param index any
+---@param backColor colors
+---@param foreColor colors
+---@param duration number
+---@return boolean,string|nil :Success,error code 
+function highlightButton(index, backColor, foreColor, duration)
+    local button = buttons[index]
+    if not button then return false,"Button could not be found!" end
+    local oldB, oldF = button.backColor, button.foreColor
+    button.backColor = backColor
+    button.foreColor = foreColor
+    drawButton(index)
+    sleep(duration)
+    button.foreColor = oldF
+    button.backColor = oldB
+    drawButton(index)
+    return true
+end
+
+--Draws all Labels and Buttons to each window, shortcut for drawButtons() and drawLabels()
 function drawAll()
     drawButtons()
     drawLabels()
 end
 
+---Takes in monitor/screen position, and returns the button that would be clicked by that position
+---Does not handle click types, only returns an id from a screen position and window
+---@param x integer
+---@param y integer
+---@param window craftOSWindow
+---@return any buttonId
 function checkButtonClick(x,y, window)
     window = window or false
     local function pointCollision(bX,bY, bW, bH, x, y)
@@ -251,17 +321,30 @@ function checkButtonClick(x,y, window)
     return false
 end
 
+---Overrides the default background color
+---@param color colors
+---@return colors|nil oldColor
 function setBackgroundColor(color)
-    if not color then return end
+    if not color then return nil end
+    if not colors.test(colors, color) then return nil end
+    local oldColor = mainWindow.getBackgroundColor()
     mainWindow.setBackgroundColor(color)
+    return oldColor
 end
 
+---Clears mainWindow background with provided color or the default color
+---@param color colors|nil
 function clear(color)
     color = color or windowColor
     setBackgroundColor(color)
     mainWindow.clear()
 end
 
+---Creates a fresh window in parentTerm (or main terminal)
+---@param parentTerm craftOSWindow|nil
+---@return table:the window created
+---@return integer: the width
+---@return integer: the height
 function createMainWindow(parentTerm)
     parentTerm = parentTerm or term.current()
     width,height = parentTerm.getSize()
@@ -271,11 +354,16 @@ function createMainWindow(parentTerm)
     return mainWindow, width,height
 end
 
+---Returns width and height of mainWindow
+---@return integer
+---@return integer
 function getSize()
     return width,height
 end
+
+
 --For 'require' implementations
 return {buttons = buttons, mainWindow = mainWindow, getSize = getSize, createButton = createButton, 
         createButtonsInGrid = createButtonsInGrid,drawButtons = drawButtons, checkButtonClick = checkButtonClick, 
         clear = clear, createMainWindow = createMainWindow, createLabel = createLabel, drawLabels = drawLabels,
-        drawAll = drawAll, quickDrawLabel = quickDrawLabel}
+        drawAll = drawAll, quickDrawLabel = quickDrawLabel, drawButton = drawButton, highlightButton = highlightButton}
