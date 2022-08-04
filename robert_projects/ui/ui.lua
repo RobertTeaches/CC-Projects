@@ -326,7 +326,7 @@ end
 ---@return colors|nil oldColor
 function setBackgroundColor(color)
     if not color then return nil end
-    if not colors.test(colors, color) then return nil end
+    --if not colors.test(colors, color) then return nil end
     local oldColor = mainWindow.getBackgroundColor()
     mainWindow.setBackgroundColor(color)
     return oldColor
