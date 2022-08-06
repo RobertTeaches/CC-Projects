@@ -275,6 +275,8 @@ end
 ---@param duration number
 ---@return boolean,string|nil :Success,error code 
 function highlightButton(index, backColor, foreColor, duration)
+    backColor = backColor or colors.lightGray
+    foreColor = foreColor or colors.black
     local button = buttons[index]
     if not button then return false,"Button could not be found!" end
     local oldB, oldF = button.backColor, button.foreColor
