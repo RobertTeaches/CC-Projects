@@ -36,16 +36,15 @@ function createButton(buttonText,x,y, width, height, foreColor, backColor,button
     --so that blit covers the entire button, and we won't have
     --any text issues
     local wDelta = width - textLength
+
     if wDelta < 0 then
         width = textLength
     else
         local beforeNum = math.floor(wDelta/2)
         local afterNu = math.ceil(wDelta/2)
-
         for i = 1, beforeNum do buttonText = " "..buttonText end
         for i = 1, afterNu do buttonText = buttonText.." " end
     end
-
 
     local buttonObject = {
         text = buttonText,
@@ -72,7 +71,7 @@ function drawButtons()
             bTColor = bTColor..tostring(colors.toBlit(button.foreColor))
             bBColor = bBColor..tostring(colors.toBlit(button.backColor))
         end
-        --print(string.len(buttonText), bTColor, string.len(bBColor))
+        --print(string.len(buttonText) bTColor, string.len(bBColor))
         local old = term.redirect(window)
         paintutils.drawFilledBox(x, y, x + width - 1, y + height - 1, button.backColor)
         term.redirect(old)
@@ -80,8 +79,18 @@ function drawButtons()
         window.setBackgroundColor(button.backColor)
         window.setTextColor(button.foreColor)
         window.blit(button.text, bTColor, bBColor)
+        window.setBackgroundColor(windowColor)
     end
-    window.setBackgroundColor(windowColor)
+    --print all values in table
+end
+
+function deleteButtons(parentWindow)
+    parentWindow = parentWindow or mainWindow
+    for i,button in pairs(buttons) do
+        if button.parentWindow == parentWindow then
+            buttons[i] = nil
+        end
+    end
 end
 
 function checkButtonClick(x,y, window)
@@ -125,4 +134,4 @@ function getSize()
 end
 --For 'require' implementations
 return {buttons = buttons, mainWindow = mainWindow, getSize = getSize, windowColor = windowColor,
-        createButton = createButton, drawButtons = drawButtons, checkButtonClick = checkButtonClick, clear = clear, createMainWindow = createMainWindow}
+createButton = createButton, drawButtons = drawButtons, deleteButtons = deleteButtons, checkButtonClick = checkButtonClick, clear = clear, createMainWindow = createMainWindow}
