@@ -57,17 +57,18 @@ function createButton(buttonText,x,y, width, height, foreColor, backColor,button
     --so that blit covers the entire button, and we won't have
     --any text issues
     local wDelta = width - textLength
+
     if wDelta < 0 then
         width = textLength
     else
         local beforeNum = math.floor(wDelta/2)
         local afterNu = math.ceil(wDelta/2)
-
         for i = 1, beforeNum do buttonText = " "..buttonText end
         for i = 1, afterNu do buttonText = buttonText.." " end
     end
 
     --The basis for ALL button object
+
     local buttonObject = {
         text = buttonText,
         position = vector.new(x,y),
@@ -128,6 +129,26 @@ function createButtonsInGrid(text, spacing, buttonWidth, buttonHeight,  window, 
             i = i + 1
             if i > #text then return end 
         end
+        --print(string.len(buttonText) bTColor, string.len(bBColor))
+        local old = term.redirect(window)
+        paintutils.drawFilledBox(x, y, x + width - 1, y + height - 1, button.backColor)
+        term.redirect(old)
+        window.setCursorPos(x,y + math.floor(height/2))
+        window.setBackgroundColor(button.backColor)
+        window.setTextColor(button.foreColor)
+        window.blit(button.text, bTColor, bBColor)
+        window.setBackgroundColor(windowColor)
+    end
+    --print all values in table
+end
+
+function deleteButtons(parentWindow)
+    parentWindow = parentWindow or mainWindow
+    for i,button in pairs(buttons) do
+        if button.parentWindow == parentWindow then
+            buttons[i] = nil
+        end
+   
     end
 end
 
