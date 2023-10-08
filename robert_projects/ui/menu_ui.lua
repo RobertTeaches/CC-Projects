@@ -104,7 +104,7 @@ term.setCursorBlink(true)
 
 
 local function mainMenu()
-    local menu = window.create(term.current(),1,1,width,height,true)
+    local menu = shopWindow.create(term.current(),1,1,width,height,true)
     mainWindow = menu
     local b1pos = vector.new(width/2, height/2)
     createButton("Menu", 1,1, 6, 1, colors.black, colors.grey)
