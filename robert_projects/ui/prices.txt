@@ -1,0 +1,6 @@
+Sword 5
+Shovel 3
+Hoe 2
+Bow 4
+Iron 3
+Steak 2
